@@ -1,8 +1,8 @@
 import java.io.File;  // Import the File class
 import java.io.FileNotFoundException;  // Import this class to handle errors
-import java.util.Arrays; //Import this to print the array
+import java.util.Arrays;
 import java.util.Scanner; // Import the Scanner class to read text files
-import java.lang.Runnable; // import this to run threads
+import java.lang.Runnable;
 
 import java.io.IOException;
 
@@ -24,13 +24,80 @@ public class Ass_1 {
 		        	input[i] = Integer.valueOf(temp);
 		        	
 		      }
-		      System.out.println(Arrays.toString(input)); //print the string
+		      //System.out.println(Arrays.toString(input)); //print the string
 		      
 			}
 		
 		//if file is not found 
 		catch (FileNotFoundException e) {
 		      System.out.println("An error occurred.");
+		}
+		
+		mergeSort(input);
+		System.out.println(Arrays.toString(input));
 	}
-}
+	
+	public static void mergeSort(int[] array) {
+        mergeSort(array, 0, array.length);
+    }
+	
+	public static void mergeSort(int[] array, int from, int to) {
+
+        // Break condition
+        if (to - from < 2) {
+            return;
+        }
+
+        // Find the middle of the array
+        int mid = (from + to) / 2;
+
+        // Left side
+        Thread leftThread = new Thread(() -> mergeSort(array, from, mid));
+        leftThread.start();
+        int leftThreadID = (int) leftThread.getId();
+        System.out.println("Thread " + Integer.toBinaryString(leftThreadID) + " started.");
+
+        // Right side
+        Thread rightThread = new Thread(() -> mergeSort(array, mid, to));
+        rightThread.start();
+        int rightThreadID = (int) rightThread.getId();
+        System.out.println("Thread " + Integer.toBinaryString(rightThreadID) + " started.");
+
+
+        // Wait for the threads to finish
+        try {
+            leftThread.join();
+            rightThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Merge the halves
+        merge(array, from, mid, to);
+
+        // Display the array/sub-arrays
+        int[] temp = Arrays.copyOfRange(array, from, to);
+        int currentThreadID = (int) Thread.currentThread().getId();
+        System.out.println("Thread " + Integer.toBinaryString(currentThreadID) + " finished: " + Arrays.toString(temp));
+    }
+	
+	public static void merge(int[] array, int from, int mid, int to) {
+        int n = to - from;
+        int[] temp = new int[n];
+        int i = from, j = mid;
+        for (int k = 0; k < n; k++) {
+            if (i == mid) {
+                temp[k] = array[j++];
+            } else if (j == to) {
+                temp[k] = array[i++];
+            } else if (array[j] < array[i]) {
+                temp[k] = array[j++];
+            } else {
+                temp[k] = array[i++];
+            }
+        }
+
+        // Copy the temp array back into the original array
+        System.arraycopy(temp, 0, array, from, n);
+    }
 }
