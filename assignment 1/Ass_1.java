@@ -33,32 +33,30 @@ public class Ass_1 {
 		      System.out.println("An error occurred.");
 		}
 		
-		mergeSort(input);
+		mergeSort(input, 0, input.length);
 		System.out.println(Arrays.toString(input));
 	}
 	
-	public static void mergeSort(int[] array) {
-        mergeSort(array, 0, array.length);
-    }
 	
-	public static void mergeSort(int[] array, int from, int to) {
+	
+	public static void mergeSort(int[] array, int start, int end) {
 
         // Break condition
-        if (to - from < 2) {
+        if (end - start < 2) {
             return;
         }
 
         // Find the middle of the array
-        int mid = (from + to) / 2;
+        int mid = (start + end) / 2;
 
         // Left side
-        Thread leftThread = new Thread(() -> mergeSort(array, from, mid));
+        Thread leftThread = new Thread(() -> mergeSort(array, start, mid));
         leftThread.start();
         int leftThreadID = (int) leftThread.getId();
         System.out.println("Thread " + Integer.toBinaryString(leftThreadID) + " started.");
 
         // Right side
-        Thread rightThread = new Thread(() -> mergeSort(array, mid, to));
+        Thread rightThread = new Thread(() -> mergeSort(array, mid, end));
         rightThread.start();
         int rightThreadID = (int) rightThread.getId();
         System.out.println("Thread " + Integer.toBinaryString(rightThreadID) + " started.");
@@ -73,22 +71,22 @@ public class Ass_1 {
         }
 
         // Merge the halves
-        merge(array, from, mid, to);
+        merge(array, start, mid, end);
 
         // Display the array/sub-arrays
-        int[] temp = Arrays.copyOfRange(array, from, to);
+        int[] temp = Arrays.copyOfRange(array, start, end);
         int currentThreadID = (int) Thread.currentThread().getId();
         System.out.println("Thread " + Integer.toBinaryString(currentThreadID) + " finished: " + Arrays.toString(temp));
     }
 	
-	public static void merge(int[] array, int from, int mid, int to) {
-        int n = to - from;
+	public static void merge(int[] array, int start, int mid, int end) {
+        int n = end - start;
         int[] temp = new int[n];
-        int i = from, j = mid;
+        int i = start, j = mid;
         for (int k = 0; k < n; k++) {
             if (i == mid) {
                 temp[k] = array[j++];
-            } else if (j == to) {
+            } else if (j == end) {
                 temp[k] = array[i++];
             } else if (array[j] < array[i]) {
                 temp[k] = array[j++];
@@ -98,6 +96,6 @@ public class Ass_1 {
         }
 
         // Copy the temp array back into the original array
-        System.arraycopy(temp, 0, array, from, n);
+        System.arraycopy(temp, 0, array, start, n);
     }
 }
