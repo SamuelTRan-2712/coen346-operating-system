@@ -1,3 +1,8 @@
+// Ngoc Son (Samuel) Tran - 40083531
+// Theebika Thiyagaraja Iyer - 400191001
+// Simren Matharoo - 40042587
+
+
 import java.io.File;  // Import the File class
 import java.io.FileNotFoundException;  // Import this class to handle errors
 import java.util.Arrays;
@@ -5,10 +10,11 @@ import java.util.Scanner; // Import the Scanner class to read text files
 import java.lang.Runnable;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 public class Ass_1 {
 
-	public static void main(String[] args) throws FileNotFoundException {
+	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 		int[]input = new int [8]; //declaration of new integer array
 		
@@ -35,12 +41,15 @@ public class Ass_1 {
 		
 		mergeSort(input, 0, input.length);
 		System.out.println(Arrays.toString(input));
-	}
+		
+}
 	
 	
 	
-	public static void mergeSort(int[] array, int start, int end) {
-
+	public static void mergeSort(int[] array, int start, int end) throws IOException {
+		
+		PrintWriter out = new PrintWriter("output.txt");
+        
         // Break condition
         if (end - start < 2) {
             return;
@@ -49,36 +58,57 @@ public class Ass_1 {
         // Find the middle of the array
         int mid = (start + end) / 2;
 
-        // Left side
-        Thread leftThread = new Thread(() -> mergeSort(array, start, mid));
-        leftThread.start();
-        int leftThreadID = (int) leftThread.getId();
-        System.out.println("Thread " + Integer.toBinaryString(leftThreadID) + " started.");
-
-        // Right side
-        Thread rightThread = new Thread(() -> mergeSort(array, mid, end));
-        rightThread.start();
-        int rightThreadID = (int) rightThread.getId();
-        System.out.println("Thread " + Integer.toBinaryString(rightThreadID) + " started.");
-
-
-        // Wait for the threads to finish
         try {
-            leftThread.join();
-            rightThread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+			// Left side
+			Thread leftThread = new Thread(() -> {
+				try {
+					mergeSort(array, start, mid);
+					} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					}
+				});
+				
+			leftThread.start();
+			int leftThreadID = (int) leftThread.getId();
+			out.println("Thread " + Integer.toBinaryString(leftThreadID) + " started.");
+			System.out.println("Thread " + Integer.toBinaryString(leftThreadID) + " started.");
+				
+			// Right side
+			Thread rightThread = new Thread(() ->{
+				try {
+						mergeSort(array, mid, end);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				});
+			rightThread.start();
+		    int rightThreadID = (int) rightThread.getId();
+		    out.println("Thread " + Integer.toBinaryString(rightThreadID) + " started.");
+		    System.out.println("Thread " + Integer.toBinaryString(rightThreadID) + " started.");
+		        
+		        
+		    leftThread.join();
+		    rightThread.join();
+		    
+		    // Merge the halves    
+		    merge(array, start, mid, end);
 
-        // Merge the halves
-        merge(array, start, mid, end);
+		    // Display the array/sub-arrays
+		    int[] temp = Arrays.copyOfRange(array, start, end);
+		    int currentThreadID = (int) Thread.currentThread().getId();
+		        
+		    out.println("Thread " + Integer.toBinaryString(currentThreadID) + " finished: " + Arrays.toString(temp));
+		    System.out.println("Thread " + Integer.toBinaryString(currentThreadID) + " finished: " + Arrays.toString(temp));
+		        
+		    } 
+		    catch (InterruptedException e) {
+		    	e.printStackTrace();
+		    }
+			out.close();
+	} 
 
-        // Display the array/sub-arrays
-        int[] temp = Arrays.copyOfRange(array, start, end);
-        int currentThreadID = (int) Thread.currentThread().getId();
-        System.out.println("Thread " + Integer.toBinaryString(currentThreadID) + " finished: " + Arrays.toString(temp));
-    }
-	
 	public static void merge(int[] array, int start, int mid, int end) {
         int n = end - start;
         int[] temp = new int[n];
