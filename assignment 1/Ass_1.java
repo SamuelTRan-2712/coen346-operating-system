@@ -16,7 +16,9 @@ public class Ass_1 {
 
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
+		
 		int[]input = new int [8]; //declaration of new integer array
+		PrintWriter out = new PrintWriter("output.txt");
 		
 		//if file is found then try
 		try {
@@ -39,16 +41,15 @@ public class Ass_1 {
 		      System.out.println("An error occurred.");
 		}
 		
-		mergeSort(input, 0, input.length);
-		System.out.println(Arrays.toString(input));
+		mergeSort(input, 0, input.length, out);
+		out.close();
 		
 }
 	
 	
 	
-	public static void mergeSort(int[] array, int start, int end) throws IOException {
+	public static void mergeSort(int[] array, int start, int end, PrintWriter out) throws IOException {
 		
-		PrintWriter out = new PrintWriter("output.txt");
         
         // Break condition
         if (end - start < 2) {
@@ -62,7 +63,7 @@ public class Ass_1 {
 			// Left side
 			Thread leftThread = new Thread(() -> {
 				try {
-					mergeSort(array, start, mid);
+					mergeSort(array, start, mid, out);
 					} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -77,7 +78,7 @@ public class Ass_1 {
 			// Right side
 			Thread rightThread = new Thread(() ->{
 				try {
-						mergeSort(array, mid, end);
+						mergeSort(array, mid, end, out);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -106,7 +107,6 @@ public class Ass_1 {
 		    catch (InterruptedException e) {
 		    	e.printStackTrace();
 		    }
-			out.close();
 	} 
 
 	public static void merge(int[] array, int start, int mid, int end) {
