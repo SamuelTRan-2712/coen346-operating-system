@@ -18,7 +18,7 @@ public class Ass_1 {
 		// TODO Auto-generated method stub
 		
 		int[]input = new int [8]; //declaration of new integer array
-		PrintWriter out = new PrintWriter("output.txt");
+		PrintWriter out = new PrintWriter("output.txt"); // define a new text file called output.txt
 		
 		//if file is found then try
 		try {
@@ -33,7 +33,7 @@ public class Ass_1 {
 		        	
 		      }
 		      //System.out.println(Arrays.toString(input)); //print the string
-		      
+		      myReader.close(); // close the input file 
 			}
 		
 		//if file is not found 
@@ -110,18 +110,21 @@ public class Ass_1 {
 	} 
 
 	public static void merge(int[] array, int start, int mid, int end) {
-        int n = end - start;
-        int[] temp = new int[n];
-        int i = start, j = mid;
+        int n = end - start; //define the length of the array
+        int[] temp = new int[n]; //create a temporary array
+        int i = start, j = mid; // set i= start and j = mid so when we merge, we merge 
+        						//left side, right side then combine them together based on the recursive call from merge sort function
+        
+        // run k till it reach the length of temporary array
         for (int k = 0; k < n; k++) {
             if (i == mid) {
-                temp[k] = array[j++];
+                temp[k] = array[j++]; // if i = mid, copy the one after mid 
             } else if (j == end) {
-                temp[k] = array[i++];
+                temp[k] = array[i++]; // if j = end, that means theres nothing else to compare with j, moves i up by 1 
             } else if (array[j] < array[i]) {
-                temp[k] = array[j++];
+                temp[k] = array[j++]; // compare the value of index j with index i, if j < i, then copy the value of j+1 to temp array
             } else {
-                temp[k] = array[i++];
+                temp[k] = array[i++]; // else, copy the value of i+1 to temp
             }
         }
 
@@ -129,3 +132,4 @@ public class Ass_1 {
         System.arraycopy(temp, 0, array, start, n);
     }
 }
+	
