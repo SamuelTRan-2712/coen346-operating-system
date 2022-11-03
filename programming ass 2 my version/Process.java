@@ -14,6 +14,8 @@ public class Process {
 	//for user name
 	public String userName;
 	
+	//Thread thread;
+	
 	
 	/**
 	 * constructor
@@ -27,5 +29,6 @@ public class Process {
 		this.arrivalTime = arrivalTime;
 		this.ifProcessAlreadyStarted = false;
 		this.userName = userName;
+		//this.thread = new Thread();
 	}
 }
