@@ -55,5 +55,11 @@ public class RunProcessScheduler {
 				
 			}
 		}
+		
+		while(scheduler.listOfAllProcesses.size() > 0 || scheduler.readyQueue.size() > 0) {
+			scheduler.runScheduling();
+		}
+		
+		reader.close();
 	}
 }
