@@ -115,15 +115,36 @@ public class Scheduling {
 			int quantumPerProcess = quantumPerUser/userProcesses.size();
 			
 			for(Process process: userProcesses) {
+				// If the process run for the first time, set its ifProcessAlreadyStarted = True
+				if(process.ifProcessAlreadyStarted == false) {
+					System.out.print("Time " + this.clock + ", Process " + process.userName + process.processID + ", Started");
+					process.ifProcessAlreadyStarted = true;
+				}
 				
+				
+				//if the burst time is less than quantumPerProcess, run the process for the burst time
+				if(process.burstTime <= quantumPerProcess) {
+					quantumPerProcess = process.burstTime;
+				}
+				
+				System.out.print("Time " + this.clock + ", Process " + process.userName + process.processID + ", Resumed");
+				
+				//Run the process for the quantumPerProcess
+				process.burstTime = process.burstTime - quantumPerProcess;
+				this.clock = this.clock + quantumPerProcess;
+				
+				//if the process is finished, remove it from the readyQueue
+				if(process.burstTime == 0) {
+					System.out.print("Time " + this.clock + ", Process " + process.userName + process.processID + ", Finished");
+					this.readyQueue.remove(process);
+				}
+				//if its not finished, remove it and add it to the last position of the readyQueue
+				else {
+					System.out.print("Time " + this.clock + ", Process " + process.userName + process.processID + ", Paused");
+					this.readyQueue.remove(process);
+					this.readyQueue.addLast(process);
+				}
 			}
-			
 		}
-		
-		
-		
-		
 	}
-	
-	
 }
